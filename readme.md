@@ -83,7 +83,9 @@ The last remaining part is the function that is configured to do an Ajax request
 
 Let’s run the three applications in the order below: 
 
-twitter_app.py, spark_stream_app.py and HashtagDashboard
+python twitter_app.py
+spark-submit spark_stream_app.py 
+python HashtagDashboard/app.py
 
 
 Then you can access the real-time dashboard using the URL <http://ec2-35-178-24-0.eu-west-2.compute.amazonaws.com:5001/>
