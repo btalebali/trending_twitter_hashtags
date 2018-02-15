@@ -11,15 +11,6 @@ and passes them to the Spark Streaming instance.
 A twitter app is used to get tweets for Twitter.
 
 
-## level 2
-
-text text text
-
-### level 3
-
-text text text
-
-
 # Apache Spark Streaming Application
 
 The Spark streaming app that will do real-time processing for the incoming tweets, extract the hashtags from them, and calculate how many hashtags have been mentioned,
