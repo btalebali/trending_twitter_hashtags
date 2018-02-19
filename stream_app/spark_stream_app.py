@@ -40,7 +40,7 @@ def send_df_to_dashboard(df):
     # extract the counts from dataframe and convert them into array
     tags_count = [p.hashtag_count for p in df.select("hashtag_count").collect()]
     # initialize and send the data through REST API
-    url = 'http://ec2-35-178-24-0.eu-west-2.compute.amazonaws.com:5001/updateData'
+    url = 'http://localhost:5001/updateData'
     request_data = {'label': str(top_tags), 'data': str(tags_count)}
     response = requests.post(url, data=request_data)
     
@@ -53,7 +53,7 @@ conf.setAppName("TwitterStreamApp")
 sc = SparkContext(conf=conf)
 sc.setLogLevel("ERROR")
 # create the Streaming Context from the above spark context with interval size 2 seconds
-ssc = StreamingContext(sc, 2)
+ssc = StreamingContext(sc, 1)
 # setting a checkpoint to allow RDD recovery
 ssc.checkpoint("checkpoint_TwitterApp")
 # read data from port 9009
