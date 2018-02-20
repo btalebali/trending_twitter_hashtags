@@ -26,14 +26,17 @@ def get_tweets():
     query_data = [('language', 'en'), ('locations', '-130,-20,100,50'),('track','#')]
     query_url = url + '?' + '&'.join([str(t[0]) + '=' + str(t[1]) for t in query_data])
     response = requests.get(query_url, auth=my_auth, stream=True, verify=False)
+    response.encoding = 'UTF-8'
     return response
+
+
 
 def send_tweets_to_spark(http_resp, tcp_connection):
     for line in http_resp.iter_lines():
         try:
             full_tweet = json.loads(line)
             tweet_text = full_tweet['text']
-            tweet_text = tweet_text.encode('utf-8')
+            print tweet_text
             tcp_connection.send(tweet_text + '\n')
         except:
             e = sys.exc_info()[0]
@@ -53,3 +56,6 @@ if __name__ == "__main__":
     print("Connected... Starting getting tweets.")
     resp = get_tweets()
     send_tweets_to_spark(resp, conn)
+    
+    
+
