@@ -1,28 +1,31 @@
+#!/usr/bin/env python
+
 
 import socket
 import sys
 import requests
 import requests_oauthlib
 import json
-
-# Replace the values below with yours
-
-ACCESS_TOKEN = '961620659754455047-JRldenKAgdjNtTb3WNVAfq2nLJz1soh'
-ACCESS_SECRET = 'SwSxwUXNDj6yU1RmPL0KcF5FhkIqOfbDb3F2M4OJuVMYu'
-CONSUMER_KEY = 'vvDZSKNPpY2feqXaxg30POemf'
-CONSUMER_SECRET = '0Mahcz4SL2jfkYqTu29jvGdDM7TeGQNG0BNKKSZ0AxN8FE3DUs'
+import ConfigParser
 
 
+### read config
+config = ConfigParser.ConfigParser()
+config.readfp(open(r'config/param.ini'))
+ACCESS_TOKEN = config.get('Twitter_app', 'ACCESS_TOKEN')
+ACCESS_SECRET = config.get('Twitter_app', 'ACCESS_SECRET')
+CONSUMER_KEY = config.get('Twitter_app', 'CONSUMER_KEY')
+CONSUMER_SECRET = config.get('Twitter_app', 'CONSUMER_SECRET')
 
-my_auth = requests_oauthlib.OAuth1(CONSUMER_KEY, CONSUMER_SECRET,ACCESS_TOKEN, ACCESS_SECRET)
+
 
 
 def get_tweets():
+    my_auth = requests_oauthlib.OAuth1(CONSUMER_KEY, CONSUMER_SECRET,ACCESS_TOKEN, ACCESS_SECRET)
     url = 'https://stream.twitter.com/1.1/statuses/filter.json'
     query_data = [('language', 'en'), ('locations', '-130,-20,100,50'),('track','#')]
     query_url = url + '?' + '&'.join([str(t[0]) + '=' + str(t[1]) for t in query_data])
-    response = requests.get(query_url, auth=my_auth, stream=True)
-    #print(query_url, response)
+    response = requests.get(query_url, auth=my_auth, stream=True, verify=False)
     return response
 
 def send_tweets_to_spark(http_resp, tcp_connection):
@@ -31,8 +34,6 @@ def send_tweets_to_spark(http_resp, tcp_connection):
             full_tweet = json.loads(line)
             tweet_text = full_tweet['text']
             tweet_text = tweet_text.encode('utf-8')
-            #print("Tweet Text: " + tweet_text)
-            #print ("------------------------------------------")
             tcp_connection.send(tweet_text + '\n')
         except:
             e = sys.exc_info()[0]

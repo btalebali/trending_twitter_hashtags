@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from pyspark import SparkConf,SparkContext
 from pyspark.streaming import StreamingContext
 from pyspark.sql import Row,SQLContext
